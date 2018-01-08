@@ -2508,8 +2508,10 @@ for i in range(0x20, 0x100):
     
     uni = True # unicode
 
-    if False:
-        print("# '" + uchr + "' " + (('"\\u%04X"') % ord(uchr)))
+    var = 3
+
+    if var == 1:
+        #!!!print("# '" + uchr + "' " + (('"\\u%04X"') % ord(uchr)))
         if uni:
             print(("font_6x8[0x%04X] = (" % ord(uchr)))
         else:
@@ -2521,7 +2523,7 @@ for i in range(0x20, 0x100):
             print('  ' + f(font_6x8_koi8r_src[i][j]) + ',')
         print('  ' + f(font_6x8_koi8r_src[i][7]) + ')')
         print()
-    else:
+    elif var == 2:
         if uni:
             str = "font_6x8[0x%04X] = (" % ord(uchr)
         else:
@@ -2531,6 +2533,13 @@ for i in range(0x20, 0x100):
         str += fhex(font_6x8_koi8r_src[i][7]) + ")" 
         str += " # '" + uchr + "' " + (('"\\u%04X"') % ord(uchr))
         print(str)
-
+    elif var == 3:
+        str = "  (" 
+        for j in range(7):
+            str += fhex(font_6x8_koi8r_src[i][j]) + ", " 
+        str += fhex(font_6x8_koi8r_src[i][7]) + "),"
+        str += " # '" + uchr + "' " + (('"\\u%04X"') % ord(uchr))
+        str += (" - 0x%02X" % i)
+        print(str)
 
 
