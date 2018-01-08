@@ -2477,7 +2477,7 @@ def f1(s):
 def f2(s):
     retv = ""
     for i in range(6):
-        retv += "##" if s[i * 2] != " " else "  "
+        retv += "()" if s[i * 2] != " " else "  "
     return '"' + retv + '"'
 
 def f3(s):
@@ -2510,22 +2510,23 @@ for i in range(0x20, 0x100):
 
     #uni = True # unicode
     uni = False # KOI8-R
-    var = 4
+    
+    var = 5
 
-    if var == 1:
+    if var == 1: # demo print
         print("# " + sym + " " + (('"\\u%04X"') % uchr) + (" - 0x%02X" % i))
         if uni:
             print(("font_6x8[0x%04X] = (" % uchr))
         else:
             print(("font_6x8_koi8r[0x%02X] = (" % i))
         
-        f = f3 # f1, f2, f3, f4
+        f = f2 # f1, f2, f3, f4
 
         for j in range(7):
             print('  ' + f(font_6x8_koi8r_src[i][j]) + ',')
         print('  ' + f(font_6x8_koi8r_src[i][7]) + ')')
         print()
-    elif var == 2:
+    elif var == 2: # bad idea
         if uni:
             str = "font_6x8[0x%04X] = (" % uchr
         else:
@@ -2535,15 +2536,15 @@ for i in range(0x20, 0x100):
         str += fhex(font_6x8_koi8r_src[i][7]) + ")" 
         str += " # " + sym + " " + (('"\\u%04X"') % uchr) +(" - 0x%02X" % i) 
         print(str)
-    elif var == 3:
+    elif var == 3: # hex mode (bad idea in Python, may be for C)
         str = "  (" 
         for j in range(7):
-            str += '0x' + fhex(font_6x8_koi8r_src[i][j]) + ", " 
+            str += '0x' + fhex(font_6x8_koi8r_src[i][j]) + ", "
         str += '0x' + fhex(font_6x8_koi8r_src[i][7]) + "),"
         str += " # " + sym + " " + (('"\\u%04X"') % uchr)
         str += (" - 0x%02X" % i)
         print(str)
-    elif var == 4:
+    elif var == 4: # KOI8-R bytes (good idea)
         str = '  b"' 
         for j in range(7):
             str += '\\x' + fhex(font_6x8_koi8r_src[i][j]) 
@@ -2551,5 +2552,27 @@ for i in range(0x20, 0x100):
         str += " # " + sym + " " + (('"\\u%04X"') % uchr)
         str += (" - 0x%02X" % i)
         print(str)
-
+    elif var == 5: # Unicode dict (good idea)
+        str = '  0x%04X: b"' % uchr
+        for j in range(7):
+            str += '\\x' + fhex(font_6x8_koi8r_src[i][j]) 
+        str += '\\x' + fhex(font_6x8_koi8r_src[i][7]) + '",'
+        str += " # " + sym + " " + (('"\\u%04X"') % uchr)
+        str += (" - 0x%02X" % i)
+        print(str)
+    elif var == 6: # KOI8-R matrix (good idea)
+        print("  # " + sym + " " + (('"\\u%04X"') % uchr) + (" - 0x%02X" % i))
+        print("  (", end="")
+        print(f3(font_6x8_koi8r_src[i][0]) + ',')
+        for j in range(1, 7):
+            print('   ' + f3(font_6x8_koi8r_src[i][j]) + ',')
+        print('   ' + f3(font_6x8_koi8r_src[i][7]) + '),')
+        print()
+    elif var == 7: # Unicode matrix (good idea)
+        print(("  0x%04X:" % uchr) + " # " + sym + (" - 0x%02X" % i))
+        print('   (' + f3(font_6x8_koi8r_src[i][0]) + ',')
+        for j in range(1, 7):
+            print('    ' + f3(font_6x8_koi8r_src[i][j]) + ',')
+        print('    ' + f3(font_6x8_koi8r_src[i][7]) + '),')
+        print()
 
