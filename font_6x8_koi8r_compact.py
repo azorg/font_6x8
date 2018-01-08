@@ -237,8 +237,9 @@ def f(b):
 for i in range(0x20, 0x100):
     ustr = bytes((i, )).decode(encoding="koi8-r")
     uchr = ord(ustr)
+    sym = "'" + ustr + "'" if i != 0x7F else "[D]"
 
-    print("# '" + ustr + "' " + (('"\\u%04X"') % uchr))
+    print("# " + sym + " " + (('"\\u%04X"') % uchr))
     print(("font_8x8_koi8r_src[0x%02X] = (" % i))
     
     index = i - 0x20

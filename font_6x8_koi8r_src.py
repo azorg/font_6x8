@@ -1048,7 +1048,7 @@ font_6x8_koi8r_src[0x7E] = (
   "            ",
   "            ")
 
-# '' "\u007F"
+# [DEL] "\u007F"
 font_6x8_koi8r_src[0x7F] = (
   "            ",
   "      ##    ",
@@ -2501,19 +2501,21 @@ def fhex(s):
     for i in range(6):
         if s[i * 2] != " ":
             retv |= 0x20 >> i
-    return "0x%02X" % retv
+    return "%02X" % retv
 
 for i in range(0x20, 0x100):
-    uchr = bytes((i, )).decode(encoding="koi8-r")
-    
-    uni = True # unicode
+    ustr = bytes((i, )).decode(encoding="koi8-r")
+    uchr = ord(ustr)
+    sym = "'" + ustr + "'" if i != 0x7F else "[D]"
 
-    var = 3
+    #uni = True # unicode
+    uni = False # KOI8-R
+    var = 4
 
     if var == 1:
-        #!!!print("# '" + uchr + "' " + (('"\\u%04X"') % ord(uchr)))
+        print("# " + sym + " " + (('"\\u%04X"') % uchr) + (" - 0x%02X" % i))
         if uni:
-            print(("font_6x8[0x%04X] = (" % ord(uchr)))
+            print(("font_6x8[0x%04X] = (" % uchr))
         else:
             print(("font_6x8_koi8r[0x%02X] = (" % i))
         
@@ -2525,20 +2527,28 @@ for i in range(0x20, 0x100):
         print()
     elif var == 2:
         if uni:
-            str = "font_6x8[0x%04X] = (" % ord(uchr)
+            str = "font_6x8[0x%04X] = (" % uchr
         else:
             str = "font_6x8_koi8r[0x%2X] = (" % i
         for j in range(7):
-            str += fhex(font_6x8_koi8r_src[i][j]) + ", " 
+            str += '0x' + fhex(font_6x8_koi8r_src[i][j]) + ", " 
         str += fhex(font_6x8_koi8r_src[i][7]) + ")" 
-        str += " # '" + uchr + "' " + (('"\\u%04X"') % ord(uchr))
+        str += " # " + sym + " " + (('"\\u%04X"') % uchr) +(" - 0x%02X" % i) 
         print(str)
     elif var == 3:
         str = "  (" 
         for j in range(7):
-            str += fhex(font_6x8_koi8r_src[i][j]) + ", " 
-        str += fhex(font_6x8_koi8r_src[i][7]) + "),"
-        str += " # '" + uchr + "' " + (('"\\u%04X"') % ord(uchr))
+            str += '0x' + fhex(font_6x8_koi8r_src[i][j]) + ", " 
+        str += '0x' + fhex(font_6x8_koi8r_src[i][7]) + "),"
+        str += " # " + sym + " " + (('"\\u%04X"') % uchr)
+        str += (" - 0x%02X" % i)
+        print(str)
+    elif var == 4:
+        str = '  b"' 
+        for j in range(7):
+            str += '\\x' + fhex(font_6x8_koi8r_src[i][j]) 
+        str += '\\x' + fhex(font_6x8_koi8r_src[i][7]) + '",'
+        str += " # " + sym + " " + (('"\\u%04X"') % uchr)
         str += (" - 0x%02X" % i)
         print(str)
 
