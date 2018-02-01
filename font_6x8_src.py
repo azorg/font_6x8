@@ -2496,6 +2496,13 @@ def f4(s):
             retv += '0'
     return retv
 
+def f5(v, x):
+    retv = 0
+    for i in range(8):
+        if v[i][x * 2] != " ":
+            retv |= 0x80 >> i
+    return "%02X" % retv
+
 def fhex(s):
     retv = 0
     for i in range(6):
@@ -2511,7 +2518,7 @@ for i in range(0x20, 0x100):
     #uni = True # unicode
     uni = False # KOI8-R
     
-    var = 5
+    var = 6
 
     if var == 1: # demo print
         print("# " + sym + " " + (('"\\u%04X"') % uchr) + (" - 0x%02X" % i))
@@ -2560,7 +2567,14 @@ for i in range(0x20, 0x100):
         str += " # " + sym + " " + (('"\\u%04X"') % uchr)
         str += (" - 0x%02X" % i)
         print(str)
-    elif var == 6: # KOI8-R matrix (good idea)
+    elif var == 6: # Unicode dict (best idea !!!)
+        str = '  0x%04X: b"' % uchr
+        for j in range(6):
+            str += '\\x' + f5(font_6x8_koi8r_src[i], j) 
+        str += '", # ' + sym + " " + (('"\\u%04X"') % uchr)
+        str += (" - 0x%02X" % i)
+        print(str)
+    elif var == 7: # KOI8-R matrix (good idea)
         print("  # " + sym + " " + (('"\\u%04X"') % uchr) + (" - 0x%02X" % i))
         print("  (", end="")
         print(f3(font_6x8_koi8r_src[i][0]) + ',')
@@ -2568,7 +2582,7 @@ for i in range(0x20, 0x100):
             print('   ' + f3(font_6x8_koi8r_src[i][j]) + ',')
         print('   ' + f3(font_6x8_koi8r_src[i][7]) + '),')
         print()
-    elif var == 7: # Unicode matrix (good idea)
+    elif var == 8: # Unicode matrix (good idea)
         print(("  0x%04X:" % uchr) + " # " + sym + (" - 0x%02X" % i))
         print('   (' + f3(font_6x8_koi8r_src[i][0]) + ',')
         for j in range(1, 7):
